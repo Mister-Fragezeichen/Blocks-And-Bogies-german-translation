@@ -1,6 +1,7 @@
 package com.weido.create_bb.data.menu;
 
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Set;
@@ -32,6 +33,7 @@ import com.weido.create_bb.data.menu.Entry.StyleEntry;
 import com.weido.create_bb.data.menu.Input.*;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 public class BogieStyleSelectionScreen extends AbstractSimiScreen {
     private final BlocksBogiesGuiTextures background = BlocksBogiesGuiTextures.BOGIE_MENU;
@@ -50,6 +52,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
     private float rotationY = 45;
     private float totalRotationY = 45;
     private float wheelAngle = 0.0f;
+    private float prevWheelAngle = 0.0f;
     private double lastMouseX;
     private double lastMouseY;
     private TypeButton typeButton;
@@ -164,7 +167,11 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
     }
 
     @Override
-    public void tick() { super.tick(); }
+    public void tick() {
+        super.tick();
+        prevWheelAngle = wheelAngle;
+        wheelAngle = (wheelAngle + (-speedScroll.getState())) % 360;
+    }
 
     @Override
     public void onClose() {
@@ -472,7 +479,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
         int light = 0xF000F0;
         int overlay = OverlayTexture.NO_OVERLAY;
 
-        wheelAngle = (wheelAngle + (-speedScroll.getState() / 10f) * partialTicks) % 360;
+        float interpolatedAngle = lerpAngle(partialTicks, prevWheelAngle, wheelAngle);
 
         BlockState bogeyState = style.getBlockForSize(renderSize)
             .defaultBlockState()
@@ -484,12 +491,12 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
             .overlay(overlay)
             .renderInto(poseStack, bufferSource.getBuffer(RenderType.cutoutMipped()));
 
-        poseStack.translate(0, 0, 0);
-
-        style.render(renderSize, partialTicks, poseStack, bufferSource, light, overlay, wheelAngle, null, false);
+        style.render(renderSize, partialTicks, poseStack, bufferSource, light, overlay, interpolatedAngle, null, false);
 
         bufferSource.endBatch();
         poseStack.popPose();
+
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
     }
 
     private void renderAllText(GuiGraphics graphics) {
@@ -550,5 +557,10 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
 
     private void updateSizeSelection() {
         ((SizeScrollInput) sizeScroll).setDriver(currentType == StyleEntry.Type.DRIVER);
+    }
+
+    private float lerpAngle(float partialTicks, float start, float end) {
+        float delta = ((end - start + 540) % 360) - 180;
+        return start + delta * partialTicks;
     }
 }
