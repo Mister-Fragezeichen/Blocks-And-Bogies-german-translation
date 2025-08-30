@@ -1,7 +1,5 @@
 modLoader="javafml" #mandatory
-
 loaderVersion="${loader_version_range}" #mandatory
-
 license="${mod_license}"
 
 [[mods]] #mandatory
@@ -18,5 +16,12 @@ license="${mod_license}"
     modId="create"
     mandatory=true
     versionRange="[6.0.0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="railways"
+    mandatory=false
+    versionRange="[1.6.12,)"
     ordering="AFTER"
     side="BOTH"
