@@ -59,8 +59,6 @@ configurations {
 }
 
 dependencies {
-    jarJar(implementation("org.apache.commons:commons-math3:3.6.1"))
-
     implementation "net.neoforged:neoforge:${neo_version}"
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}") { transitive = false }
     implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
