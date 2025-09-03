@@ -1,9 +1,6 @@
 package com.weido.create_bb;
 
-import com.weido.create_bb.registry.BogieBlockEntities;
-import com.weido.create_bb.registry.BogieBlocks;
-import com.weido.create_bb.registry.BogiePackets;
-import com.weido.create_bb.registry.BogieStyles;
+import com.weido.create_bb.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.neoforged.bus.api.IEventBus;
@@ -29,6 +26,8 @@ public class BlocksBogies {
         BogieBlocks.register();
         BogiePackets.register();
         BogieBlockEntities.register();
+
+        BogiePartials.init();
 
         modEventBus.addListener(BlocksBogies::init);
     }
