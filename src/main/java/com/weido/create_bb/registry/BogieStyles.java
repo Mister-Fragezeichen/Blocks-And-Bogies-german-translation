@@ -327,7 +327,7 @@ public class BogieStyles {
             MANAGER.addToBogeyEntryList(StyleEntry.getOrCreate(BogieStyles.TRIPLE_AXLE_TRAILING, Variant.TRAILING, ValveGear.NONE, Type.TRUCK, 3, Length.NORMAL));
             MANAGER.addToBogeyEntryList(StyleEntry.getOrCreate(BogieStyles.QUADRUPLE_AXLE_TRAILING, Variant.TRAILING, ValveGear.NONE, Type.TRUCK, 4, Length.NORMAL));
 
-            MANAGER.addToBogeyEntryList(StyleEntry.getOrCreate(BogieStyles.SINGLE_AXLE_OFFSET, Variant.STANDARD, ValveGear.NONE, Type.TRUCK, 1, Length.SPACED));
+            MANAGER.addToBogeyEntryList(StyleEntry.getOrCreate(BogieStyles.SINGLE_AXLE_OFFSET, Variant.STANDARD, ValveGear.NONE, Type.TRUCK, 1, Length.OFFSET));
 
             MANAGER.addToBogeyEntryList(StyleEntry.getOrCreate(BogieStyles.SINGLE_AXLE_BOGIE, Variant.STANDARD, ValveGear.NONE, Type.TRUCK, 1, Length.NORMAL));
             MANAGER.addToBogeyEntryList(StyleEntry.getOrCreate(BogieStyles.TRIPLE_AXLE_BOGIE, Variant.STANDARD, ValveGear.NONE, Type.TRUCK, 3, Length.NORMAL));
