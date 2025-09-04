@@ -32,7 +32,7 @@ public class LengthScrollInput extends ScrollInput {
         List<StyleEntry.Length> priorityOrder = List.of(
                 StyleEntry.Length.NORMAL,
                 StyleEntry.Length.EXTENDED,
-                StyleEntry.Length.OFFSET
+                StyleEntry.Length.SPACED
         );
 
         sortedList.sort(Comparator.comparingInt(priorityOrder::indexOf));
