@@ -3,11 +3,13 @@
   "package": "com.weido.create_bb.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "StationBlockEntityMixin",
+    "CarriageContraptionVisualMixin",
+    "ContraptionVisualAccessor",
     "StandardBogeyBlockMixin",
+    "StationBlockEntityMixin",
     "TrackBlockMixin"
   ],
-  "client": [ ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }
