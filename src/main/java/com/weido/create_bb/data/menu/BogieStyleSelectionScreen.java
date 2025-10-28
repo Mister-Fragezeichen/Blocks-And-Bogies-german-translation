@@ -90,7 +90,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
         int buttonBottomPos = guiTop + background.getHeight() - 53;
 
         IconButton confirmButton = new IconButton(guiLeft + background.getWidth() - 25, guiTop + background.getHeight() - 24, AllIcons.I_CONFIRM)
-                .withCallback(this::onClose);
+                .withCallback(this::onMenuClose);
 
         typeButton = new TypeButton(buttonRightPos, buttonBottomPos)
             .withCallback(() -> {
@@ -173,8 +173,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
         wheelAngle = (wheelAngle + (-speedScroll.getState())) % 360;
     }
 
-    @Override
-    public void onClose() {
+    public void onMenuClose() {
         firstTime = false;
         BogeyStyleMenuState.saveState(
             currentType,
@@ -190,6 +189,11 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
             targetPos
         );
         CatnipServices.NETWORK.sendToServer(packet);
+        super.onClose();
+    }
+
+    @Override
+    public void onClose() {
         super.onClose();
     }
 
