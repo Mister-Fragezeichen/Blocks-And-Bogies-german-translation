@@ -30,6 +30,9 @@ public record StyleEntry(@NotNull BogeyStyle bogeyStyle, Variant variant, ValveG
         NONE("create_bb.valve_gear.none"),
         WALSCHAERTS("create_bb.valve_gear.walschaerts"),
         ROTARY_POPPET("create_bb.valve_gear.rotary_poppet"),
+        GEARLESS("create_bb.valve_gear.gearless"),
+        PISTONLESS("create_bb.valve_gear.pistonless"),
+        RODLESS("create_bb.valve_gear.rodless"),
         SCOTCH_YOKE("create_bb.valve_gear.scotch_yoke");
 
         private final String translationKey;
@@ -47,7 +50,6 @@ public record StyleEntry(@NotNull BogeyStyle bogeyStyle, Variant variant, ValveG
         STANDARD("create_bb.variant.standard"),
         LONG("create_bb.variant.long"),
         SHORT("create_bb.variant.short"),
-        PISTONLESS("create_bb.variant.pistonless"),
         TRAILING("create_bb.variant.trailing");
         private final String translationKey;
 
