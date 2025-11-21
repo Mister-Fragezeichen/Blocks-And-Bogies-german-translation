@@ -1,6 +1,7 @@
 package com.weido.create_bb.data.menu;
 
 import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Set;
@@ -32,6 +33,7 @@ import com.weido.create_bb.data.menu.Entry.StyleEntry;
 import com.weido.create_bb.data.menu.Input.*;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 public class BogieStyleSelectionScreen extends AbstractSimiScreen {
     private final BlocksBogiesGuiTextures background = BlocksBogiesGuiTextures.BOGIE_MENU;
@@ -50,6 +52,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
     private float rotationY = 45;
     private float totalRotationY = 45;
     private float wheelAngle = 0.0f;
+    private float prevWheelAngle = 0.0f;
     private double lastMouseX;
     private double lastMouseY;
     private TypeButton typeButton;
@@ -87,7 +90,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
         int buttonBottomPos = guiTop + background.getHeight() - 53;
 
         IconButton confirmButton = new IconButton(guiLeft + background.getWidth() - 25, guiTop + background.getHeight() - 24, AllIcons.I_CONFIRM)
-                .withCallback(this::onClose);
+                .withCallback(this::onMenuClose);
 
         typeButton = new TypeButton(buttonRightPos, buttonBottomPos)
             .withCallback(() -> {
@@ -97,10 +100,10 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
                 updateSizeSelection();
             });
 
-        variantScroll = new VariantScrollInput(buttonLeftPos, buttonTopPos, 142, buttonHeight)
+        variantScroll = new VariantScrollInput(buttonRightPos, buttonTopPos, 142, buttonHeight)
             .setState(firstTime ? 0 : BogeyStyleMenuState.getLastVariant());
 
-        valvegearScroll = new ValveGearScrollInput(buttonRightPos, buttonTopPos, 142, buttonHeight)
+        valvegearScroll = new ValveGearScrollInput(buttonLeftPos, buttonTopPos, 142, buttonHeight)
             .setState(firstTime ? 0 : BogeyStyleMenuState.getLastValvegear());
 
         axleCountScroll = new AxleCountScrollInput(buttonLeftPos, buttonBottomPos, 78, buttonHeight)
@@ -164,10 +167,13 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
     }
 
     @Override
-    public void tick() { super.tick(); }
+    public void tick() {
+        super.tick();
+        prevWheelAngle = wheelAngle;
+        wheelAngle = (wheelAngle + (-speedScroll.getState())) % 360;
+    }
 
-    @Override
-    public void onClose() {
+    public void onMenuClose() {
         firstTime = false;
         BogeyStyleMenuState.saveState(
             currentType,
@@ -183,6 +189,11 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
             targetPos
         );
         CatnipServices.NETWORK.sendToServer(packet);
+        super.onClose();
+    }
+
+    @Override
+    public void onClose() {
         super.onClose();
     }
 
@@ -457,9 +468,9 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
         poseStack.pushPose();
 
         int backgroundWidth = background.getWidth();
-        poseStack.translate(guiLeft + backgroundWidth/2f + previewOffsetX, guiTop + background.getHeight() - 151 + previewOffsetY, -100);
+        poseStack.translate(guiLeft + backgroundWidth/2f + previewOffsetX, guiTop + background.getHeight() - 151 + previewOffsetY, 1500);
         poseStack.scale(1, 1, -1);
-        poseStack.translate(0, 0, -100);
+        poseStack.translate(0, 0, 1000);
         poseStack.scale(previewScale, previewScale, previewScale);
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
@@ -472,7 +483,7 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
         int light = 0xF000F0;
         int overlay = OverlayTexture.NO_OVERLAY;
 
-        wheelAngle = (wheelAngle + (-speedScroll.getState() / 10f) * partialTicks) % 360;
+        float interpolatedAngle = lerpAngle(partialTicks, prevWheelAngle, wheelAngle);
 
         BlockState bogeyState = style.getBlockForSize(renderSize)
             .defaultBlockState()
@@ -484,12 +495,12 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
             .overlay(overlay)
             .renderInto(poseStack, bufferSource.getBuffer(RenderType.cutoutMipped()));
 
-        poseStack.translate(0, 0, 0);
-
-        style.render(renderSize, partialTicks, poseStack, bufferSource, light, overlay, wheelAngle, null, false);
+        style.render(renderSize, partialTicks, poseStack, bufferSource, light, overlay, interpolatedAngle, null, false);
 
         bufferSource.endBatch();
         poseStack.popPose();
+
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, false);
     }
 
     private void renderAllText(GuiGraphics graphics) {
@@ -550,5 +561,10 @@ public class BogieStyleSelectionScreen extends AbstractSimiScreen {
 
     private void updateSizeSelection() {
         ((SizeScrollInput) sizeScroll).setDriver(currentType == StyleEntry.Type.DRIVER);
+    }
+
+    private float lerpAngle(float partialTicks, float start, float end) {
+        float delta = ((end - start + 540) % 360) - 180;
+        return start + delta * partialTicks;
     }
 }

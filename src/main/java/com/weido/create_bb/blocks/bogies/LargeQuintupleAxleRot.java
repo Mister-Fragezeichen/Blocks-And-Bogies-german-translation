@@ -11,6 +11,7 @@ public class LargeQuintupleAxleRot extends RotatableLargeBogieBlock {
     public LargeQuintupleAxleRot(Properties props) {
         super(props, BogieStyles.QUINTUPLE_AXLE_LONG, BogeySizes.SMALL);
     }
+
     @Override
     public Vec3 getConnectorAnchorOffset() {
         return new Vec3(0, 7/32f, 140/32f);

@@ -18,6 +18,7 @@ repositories {
     mavenCentral()
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://mvn.devos.one/snapshots" } // Registrate
+    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
 }
 
@@ -59,8 +60,6 @@ configurations {
 }
 
 dependencies {
-    jarJar(implementation("org.apache.commons:commons-math3:3.6.1"))
-
     implementation "net.neoforged:neoforge:${neo_version}"
     implementation("com.simibubi.create:create-${minecraft_version}:${create_version}") { transitive = false }
     implementation("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
